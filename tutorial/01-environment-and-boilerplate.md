@@ -171,4 +171,4 @@ docker-compose run -d api
 
 Next section: [02 - A basic CRUD API with TDD](02-crud-api.md#readme)
 
-Back to the [table of contents](https://github.com/verekia/js-stack-from-scratch#table-of-contents).
+Back to the [table of contents](https://github.com/servomac/apistar-from-scratch#table-of-contents).
