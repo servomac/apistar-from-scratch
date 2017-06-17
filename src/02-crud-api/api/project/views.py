@@ -16,6 +16,9 @@ def list_tasks() -> List[Task]:
     return [Task(t) for t in tasks]
 
 def add_task(definition: TaskDefinition) -> Task:
+    """
+    Add a new task
+    """
     new_task = Task({'definition': definition})
     tasks.append(new_task)
     return new_task

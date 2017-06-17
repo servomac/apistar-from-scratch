@@ -14,3 +14,8 @@ This is a step by step tutorial to develop a simple API using this framework, he
  [01 - Set up the environment and create your first project](/tutorial/01-environment-and-boilerplate.md#readme)
 
  [02 - A basic CRUD API with TDD](/tutorial/02-crud-api.md#readme)
+
+ [03 - Database Backend](/tutorial/03-database-backend.md#readme) *(Pending)*
+
+ [04 - Add User Authentication](/tutorial/04-add-user-authentication) *(Pending)*
+ 

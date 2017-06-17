@@ -6,16 +6,15 @@ With our fresh environment we will start to get hands on with API Star. In this 
 
 We will put special enfasis on testing, using `py.test` testing framework, which is included in API Star. We will follow some principles of TDD (*Test Driven Development*).
 
-## A TODO List
+## Just another TODO list API
 
-The TODO List is the 'hello world' of the XXI century. In this basic example, a user could create or delete a **Task**, as well as mark it as completed. It should also list every **Task**, and maybe allow to filter by a completed query string param.
+The TODO List is the 'hello world' of the XXI century. In this basic example, a user must be able to create or delete a **Task**, as well as mark it as completed. It should also list every **Task**, and maybe allow to filter by a completed query string param.
 
-The endpoints of our API will be:
+The endpoints of our API that will be developed in this chapter are:
 
  * `GET /task/`: Retrieve a list of tasks.
  * `POST /task/`: Create a new task.
- * `GET /task/{id}/`: Retrieve an specific task by id.
- * `PUT /task/{id}/`: Update some field of an specific task (i.e. mark as completed)
+ * `PUT /task/{id}/`: Update some field of an specific task by id (i.e. mark as completed)
  * `DELETE /task/{id}/`: Delete a task by id. 
 
 ## Testing a dumb view
@@ -95,7 +94,7 @@ docker-compose run test
 
 ### py.test
 
-In `tests/test_app.yml`, add two simple tests that call the views and assert that they return an empty dictionary.
+Add two simple tests at `tests/test_app.py` that call the views and assert that they return an empty dictionary.
 
 ```python
 from project.views import list_tasks, add_task
@@ -125,7 +124,23 @@ def list_tasks():
 
 #### TestClient
 
-TODO explain
+API Star also provides a test client wrapping `requests` to test your app. We have tested the views directly, but we could also add a few http tests using this client:
+
+```python
+from apistar.test import TestClient
+
+client = TestClient()
+
+def test_http_list_tasks():
+    response = client.get('/tasks/')
+    assert response.status_code == 200
+    assert response.json() == []
+
+def test_http_add_task():
+    response = client.post('/tasks/')
+    assert response.status_code == 200
+    assert response.json() == {}
+```
 
 ## Schemas
 
@@ -167,20 +182,46 @@ from apistar.test import TestClient
 task_endpoint = '/task/'
 client = TestClient()
 
+new_task = {'definition': 'test task'}
+added_task = {'definition': 'test task', 'completed': False}
+
 def test_list_tasks():
     response = client.get(task_endpoint)
     assert response.status_code == 200
     assert response.json() == []
 
 def test_add_task():
-    new_task = {'definition': 'test task'}
-
     response = client.post(task_endpoint, new_task)
     assert response.status_code == 200
 
-    result = new_task
-    result['completed'] = False
-    assert response.json() == result
+    assert response.json() == added_task
 
+def test_list_an_added_task():
+    response = client.get(task_endpoint)
+    assert response.status_code == 200
+    assert response.json() == [added_task]
+
+    test_add_task()
+    response = client.get(task_endpoint)
+    assert response.status_code == 200
+    assert response.json() == [added_task, added_task]
 ```
 > Note: We have extracted the tests related with the `/task/` API endpoint in `tests/test_task.py`.
+
+Take a look to the views annotated with the Schemas previously defined. `list_task` returns a list of serialized task items, and `add_task` gets input via type annotation, with a validated definition.
+
+Until now we have just tested the happy path, and that's just naive! But we will let that as an exercise to the reader. Fork the project and add some tests.
+
+### Views to delete and update task
+
+Let's add the pending functionality: mark a todo task as completed and delete a task.
+
+Until now our schema does not include an unique `id` value for tasks, so we cannot identify a concrete task (because different tasks could have the same definition and completion state). Also the data structure that we have used to persist the tasks in memory, a list, it's not specially suited for indexing by key, deleting tasks, etc.
+
+TODO
+  - start modifying the existing code to extend schema with an id
+  - consider using a closure for the autoincremental id
+
+Next section: [03 - Database backend](03-database-backend.md#readme)
+
+Back to the [table of contents](https://github.com/servomac/apistar-from-scratch#table-of-contents).
