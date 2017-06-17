@@ -95,7 +95,7 @@ docker-compose run test
 
 ### py.test
 
-In the `tests/test_app.yml`, add two simple tests that call the views and assert that they return an empty dictionary.
+In `tests/test_app.yml`, add two simple tests that call the views and assert that they return an empty dictionary.
 
 ```python
 from project.views import list_tasks, add_task
@@ -132,6 +132,7 @@ TODO explain
 To define the interface of this views we create an schema of our **Task** object, and a simple **TaskDefinition** constraining the max length of the string on input.
 
 ```python
+# schemas.py
 from apistar import schema
 
 class TaskDefinition(schema.String):
@@ -160,15 +161,26 @@ def add_task(definition: TaskDefinition) -> Task:
     task.append(new_task)
     return new_task
 
-# test_app.py
+# test_task.py
+from apistar.test import TestClient
+
+task_endpoint = '/task/'
 client = TestClient()
+
+def test_list_tasks():
+    response = client.get(task_endpoint)
+    assert response.status_code == 200
+    assert response.json() == []
 
 def test_add_task():
     new_task = {'definition': 'test task'}
-    response = client.post('/task/', new_task)
+
+    response = client.post(task_endpoint, new_task)
     assert response.status_code == 200
 
     result = new_task
     result['completed'] = False
     assert response.json() == result
+
 ```
+> Note: We have extracted the tests related with the `/task/` API endpoint in `tests/test_task.py`.
