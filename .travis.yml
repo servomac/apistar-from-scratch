@@ -1,0 +1,19 @@
+language: python
+
+cache: pip
+
+python:
+  - "3.5"
+  - "3.6"
+
+sudo: required
+services:
+  - docker
+
+before_script:
+  - cd src/01-environment-and-boilerplate
+  - docker build -t base .
+  - docker images
+
+script:
+  - docker run --rm -it base apistar test

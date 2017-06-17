@@ -53,7 +53,7 @@ COPY requirements.txt /app/
 RUN pip3 install -U pip \
     && pip3 install -r requirements.txt
 
-ADD ./ /app/
+ADD ./api/ /app/
 ```
 
 Build the image. The parent image `python:3.6` default command is `python3`, so running it without additional parameters will provide an interactive python shell (with the dependencies installed; try `import apistar`):
