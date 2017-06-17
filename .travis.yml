@@ -11,9 +11,12 @@ services:
   - docker
 
 before_script:
-  - cd src/01-environment-and-boilerplate
-  - docker build -t base .
-  - docker images
+  - cd ${TRAVIS_BUILD_DIR}/src/01-environment-and-boilerplate
+  - docker build -t base:chapter1 .
+
+  - cd ${TRAVIS_BUILD_DIR}/src/02-crud-api
+  - docker build -t base:chapter2 .
 
 script:
-  - docker run --rm -it base apistar test
+  - docker run --rm -it base:chapter1 apistar test
+  - docker run --rm -it base:chapter2 apistar test
