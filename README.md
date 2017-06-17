@@ -1,4 +1,5 @@
 # API Star from scratch
+[![Build Status](https://travis-ci.org/servomac/apistar-from-scratch.svg?branch=master)](https://travis-ci.org/servomac/apistar-from-scratch)
 
 [API Star](https://github.com/tomchristie/apistar) is a web framework at early stages, centered in API construction. Its development is leaded by Tom Christie, the developer of [Django REST framework](http://www.django-rest-framework.org/).
 
