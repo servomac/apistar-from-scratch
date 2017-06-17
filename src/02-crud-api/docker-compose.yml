@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  base:
+    build: .
+    entrypoint: apistar
+    working_dir: /app
+    volumes:
+      - "./api:/app"
+
+  api:
+    extends: base
+    command: ["run", "--host", "0.0.0.0", "--port", "80"]
+    ports:
+      - "8080:80"
+
+  test:
+    extends: base
+    command: ["test"]
