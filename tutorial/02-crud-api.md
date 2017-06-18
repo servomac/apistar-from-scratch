@@ -283,10 +283,11 @@ def delete_task(task_id: int) -> Response:
     return Response({}, status=204)
 ```
 
-And now as an exercise, why do not write your own update task?
+And now as an exercise, why do not write your own update task? You can see our simple proposal in the final [source code of this chapter](/src/02-crud-api/project/views.py).
 
 - *TODO commit and push the tests*
 - *TODO write the update task and reference the tests and implementation here*
+- *TODO appendix for the filtering of completed/uncompleted tasks via query string*
 
 Next section: [03 - Database backend](03-database-backend.md#readme)
 
