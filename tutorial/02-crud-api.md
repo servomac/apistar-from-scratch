@@ -218,9 +218,79 @@ Let's add the pending functionality: mark a todo task as completed and delete a 
 
 Until now our schema does not include an unique `id` value for tasks, so we cannot identify a concrete task (because different tasks could have the same definition and completion state). Also the data structure that we have used to persist the tasks in memory, a list, it's not specially suited for indexing by key, deleting tasks, etc.
 
-TODO
-  - start modifying the existing code to extend schema with an id
-  - consider using a closure for the autoincremental id
+The first thing that we will do is write some tests for the new autoincremental id of the tasks, then change the schema (adding an `'id': schema.Integer(default=None)` in the properties) and use a generator to implement an autoincremental counter for our tasks ids, before starting to write the new views.
+
+```python
+# views.py
+import itertools
+counter = itertools.count(1).__next__
+
+def add_task(definition: TaskDefinition) -> Task:
+    """
+    Add a new task. It receives its definition as an argument
+    and sets an autoincremental id in the Task constructor.
+    """
+    new_task = Task({'id': counter(), 'definition': definition})
+    tasks.append(new_task)
+    return new_task
+```
+
+And voilà, now the tasks have an id and are uniquely identifiable. See the [tests](/src/02-crud-api/tests/test_task.py) for the simple case of adding two times the same task.
+
+> A lot of people argue that APIs should not expose internal indexes to the public, and some propose to use uids or other mechanisms to expose ours objects to the world. They are right. But this is a tutorial from scratch, let's go step by step!
+
+Another refactor that will become extremly handy in the implementation of our views is replacing our list of tasks by a dictionary of tasks, with their brand new ids as key. Obviously updating and deleting operations would benefit from the direct access of a dictionary, both in code simplicity and computational complexity. 
+
+```python
+# views.py
+tasks = {}
+
+def list_tasks() -> List[Task]:
+    """
+    Return a list of tasks
+    """
+    return [Task(tasks[id]) for id in tasks]
+
+def add_task(definition: TaskDefinition) -> Task:
+    """
+    Add a new task. It receives its definition as an argument
+    and sets an autoincremental id in the Task constructor.
+
+    TODO:
+     - maybe this counter could be implemented as an injectable component?
+    """
+    id = counter()
+    tasks[id] = Task({'id': id, 'definition': definition})
+    return tasks[id]
+```
+
+The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and update views. For example, add this view as handler of the `DELETE` verb over /task/ (using the curly braces syntax for the url parameter), and see the delete method. Here we will use apistar `Response`s to return different status codes depending on the success (or failure) of the action.
+
+```python
+# routes.py
+from project.views import list_tasks, add_task, delete_task
+
+task_routes = [
+    Route('/', 'GET', list_tasks),
+    Route('/', 'POST', add_task),
+    Route('/{task_id}/', 'DELETE', delete_task),
+]
+
+# views.py
+from apistar.http import Response
+
+def delete_task(task_id: int) -> Response:
+    if task_id not in tasks:
+        return Response({}, status=404)
+
+    del tasks[task_id]
+    return Response({}, status=204)
+```
+
+And now as an exercise, why do not write your own update task?
+
+TODO commit and push the tests
+TODO write the update task and reference the tests and implementation here
 
 Next section: [03 - Database backend](03-database-backend.md#readme)
 
