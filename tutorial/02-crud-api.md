@@ -14,7 +14,7 @@ The endpoints of our API that will be developed in this chapter are:
 
  * `GET /task/`: Retrieve a list of tasks.
  * `POST /task/`: Create a new task.
- * `PUT /task/{id}/`: Update some field of an specific task by id (i.e. mark as completed)
+ * `PATCH /task/{id}/`: Update some field of an specific task by id (i.e. mark as completed)
  * `DELETE /task/{id}/`: Delete a task by id. 
 
 ## Testing a dumb view
@@ -212,7 +212,7 @@ Take a look to the views annotated with the Schemas previously defined. `list_ta
 
 Until now we have just tested the happy path, and that's just naive! But we will let that as an exercise to the reader. Fork the project and add some tests.
 
-### Views to delete and update task
+### Delete a task or mark it as completed
 
 Let's add the pending functionality: mark a todo task as completed and delete a task.
 
@@ -254,11 +254,15 @@ def add_task(definition: TaskDefinition) -> Task:
     and sets an autoincremental id in the Task constructor.
     """
     id = counter()
-    tasks[id] = Task({'id': id, 'definition': definition})
+    tasks[id] = Task({
+        'id': id,
+        'definition': definition,
+        'completed' = False,
+    })
     return tasks[id]
 ```
 
-The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and update views.
+The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and patch views.
 
 In the routes file we will be using the curly braces syntax for the url id parameter, to pass it to the `delete_task` method. API Start by default returns plain text and a 200 status code. But when a delete action is successfull a 204 should be returned, and a 404 if the specified task does not exist. `Response`s allows us to customize our responses.
 
@@ -283,10 +287,14 @@ def delete_task(task_id: int) -> Response:
     return Response({}, status=204)
 ```
 
-And now as an exercise, why do not write your own update task? You can see our simple proposal in the final [source code of this chapter](/src/02-crud-api/project/views.py).
+> Note: I have rewritten the view add_task with this recently introduced Response. A POST to an API endpoint that is successfull should return a 201 status code and the created object.
 
-- *TODO commit and push the tests*
-- *TODO write the update task and reference the tests and implementation here*
+And now as an exercise, why you don't write your own method and routing to mark a task as completed? You can see our simple proposal in the final [source code of this chapter](/src/02-crud-api/project/views.py), method `patch_task`.
+
+Note that in this implementation, we are using a PATCH method with a *task_id* parameter from the URL and a *completed* boolean from the body of the request. As the [current README](https://github.com/tomchristie/apistar#url-routing) of apistar reads:
+
+> Parameters which do not correspond to a URL path parameter will be treated as query parameters for GET and DELETE requests, or part of the request body for POST, PUT, and PATCH requests.
+
 - *TODO appendix for the filtering of completed/uncompleted tasks via query string*
 
 Next section: [03 - Database backend](03-database-backend.md#readme)
