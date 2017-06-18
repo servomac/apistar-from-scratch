@@ -234,10 +234,9 @@ def add_task(definition: TaskDefinition) -> Task:
     tasks.append(new_task)
     return new_task
 ```
+> A lot of people argue that APIs should not expose internal indexes to the public, and some propose to use uids or other mechanisms to expose ours objects to the world. They are right. But this is a tutorial from scratch, let's go step by step!
 
 And voilà, now the tasks have an id and are uniquely identifiable. See the [tests](/src/02-crud-api/tests/test_task.py) for the simple case of adding two times the same task.
-
-> A lot of people argue that APIs should not expose internal indexes to the public, and some propose to use uids or other mechanisms to expose ours objects to the world. They are right. But this is a tutorial from scratch, let's go step by step!
 
 Another refactor that will become extremly handy in the implementation of our views is replacing our list of tasks by a dictionary of tasks, with their brand new ids as key. Obviously updating and deleting operations would benefit from the direct access of a dictionary, both in code simplicity and computational complexity. 
 
@@ -246,25 +245,22 @@ Another refactor that will become extremly handy in the implementation of our vi
 tasks = {}
 
 def list_tasks() -> List[Task]:
-    """
-    Return a list of tasks
-    """
+    """ Return a list of tasks """
     return [Task(tasks[id]) for id in tasks]
 
 def add_task(definition: TaskDefinition) -> Task:
     """
     Add a new task. It receives its definition as an argument
     and sets an autoincremental id in the Task constructor.
-
-    TODO:
-     - maybe this counter could be implemented as an injectable component?
     """
     id = counter()
     tasks[id] = Task({'id': id, 'definition': definition})
     return tasks[id]
 ```
 
-The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and update views. For example, add this view as handler of the `DELETE` verb over /task/ (using the curly braces syntax for the url parameter), and see the delete method. Here we will use apistar `Response`s to return different status codes depending on the success (or failure) of the action.
+The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and update views.
+
+In the routes file we will be using the curly braces syntax for the url id parameter, to pass it to the `delete_task` method. API Start by default returns plain text and a 200 status code. But when a delete action is successfull a 204 should be returned, and a 404 if the specified task does not exist. `Response`s allows us to customize our responses.
 
 ```python
 # routes.py
@@ -289,8 +285,8 @@ def delete_task(task_id: int) -> Response:
 
 And now as an exercise, why do not write your own update task?
 
-TODO commit and push the tests
-TODO write the update task and reference the tests and implementation here
+- *TODO commit and push the tests*
+- *TODO write the update task and reference the tests and implementation here*
 
 Next section: [03 - Database backend](03-database-backend.md#readme)
 
