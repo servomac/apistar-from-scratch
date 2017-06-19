@@ -25,6 +25,12 @@ def test_add_task():
 
     assert response.json() == added_task
 
+# TODO pending https://github.com/tomchristie/apistar/issues/6
+#def test_add_task_without_data():
+#    response = client.post(task_endpoint)
+#    assert response.status_code == 422
+#    assert response.json() == {'error': 'You should provide a definition of the task.'}
+
 def test_list_an_added_task():
     response = client.get(task_endpoint)
     assert response.status_code == 200

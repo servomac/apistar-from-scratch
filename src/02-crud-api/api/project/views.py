@@ -31,6 +31,9 @@ def add_task(definition: TaskDefinition) -> Response:
     TODO:
      - maybe this counter could be implemented as an injectable component?
     """
+    if not definition:
+        Response(422, {'error': 'You should provide a definition of the task.'})
+
     id = counter()
     tasks[id] = {
         'id': id,
