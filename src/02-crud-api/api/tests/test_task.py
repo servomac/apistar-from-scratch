@@ -9,17 +9,16 @@ from apistar.test import TestClient
 """
 
 task_endpoint = '/task/'
-client = TestClient()
 
 new_task = {'definition': 'test task'}
 added_task = {'definition': 'test task', 'completed': False, 'id': 1}
 
-def test_list_tasks():
+def test_list_tasks(client):
     response = client.get(task_endpoint)
     assert response.status_code == 200
     assert response.json() == []
 
-def test_add_task():
+def test_add_task(client):
     response = client.post(task_endpoint, new_task)
     assert response.status_code == 201
 
@@ -31,7 +30,7 @@ def test_add_task():
 #    assert response.status_code == 422
 #    assert response.json() == {'error': 'You should provide a definition of the task.'}
 
-def test_list_an_added_task():
+def test_list_an_added_task(client):
     response = client.get(task_endpoint)
     assert response.status_code == 200
     assert response.json() == [added_task]
@@ -51,7 +50,7 @@ def test_list_an_added_task():
 def _task_id_endpoint(task_id):
     return f'{task_endpoint}{task_id}/'
 
-def test_delete_task():
+def test_delete_task(client):
     response = client.delete(_task_id_endpoint(-1))
     assert response.status_code == 404
 
@@ -62,7 +61,7 @@ def test_delete_task():
     response = client.delete(_task_id_endpoint(existing_id))
     assert response.status_code == 404
 
-def test_patch_task():
+def test_patch_task(client):
     response = client.patch(_task_id_endpoint(-1), {'completed': True})
     assert response.status_code == 404
 

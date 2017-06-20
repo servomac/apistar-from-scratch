@@ -124,7 +124,7 @@ def list_tasks():
 
 #### TestClient
 
-API Star also provides a test client wrapping `requests` to test your app. We have tested the views directly, but we could also add a few http tests using this client:
+API Star also provides a test client wrapping `requests` to test your app. We have tested the views directly, but we could also add a few http tests using this client.
 
 ```python
 from apistar.test import TestClient
@@ -142,9 +142,11 @@ def test_http_add_task():
     assert response.json() == {}
 ```
 
+In our case, we will define a [pytest fixture at directory level](https://docs.pytest.org/en/latest/example/simple.html#package-directory-level-fixtures-setups) to provide our client as parameters of the tests (see [/tests/conftest.py](/src/02-crud-api/tests/conftest.py)).
+
 ## Schemas
 
-To define the interface of this views we create an schema of our **Task** object, and a simple **TaskDefinition** constraining the max length of the string on input.
+To define the interface of the views, create an schema of our **Task** object and a simple **TaskDefinition**, constraining the max length of the string on input.
 
 ```python
 # schemas.py
@@ -264,7 +266,7 @@ def add_task(definition: TaskDefinition) -> Task:
 
 The tests should still be green. But now, with this small changes, we should be capable of easily implement the delete and patch views.
 
-In the routes file we will be using the curly braces syntax for the url id parameter, to pass it to the `delete_task` method. API Start by default returns plain text and a 200 status code. But when a delete action is successfull a 204 should be returned, and a 404 if the specified task does not exist. `Response`s allows us to customize our responses.
+In the routes file we will be using the *curly braces syntax* for the url id parameter, to pass it to the `delete_task` method. API Start by default returns plain text and a 200 status code. But when a delete action is successfull a 204 should be returned, and a 404 if the specified task does not exist. `Response`s allows us to customize our responses.
 
 ```python
 # routes.py
@@ -287,7 +289,7 @@ def delete_task(task_id: int) -> Response:
     return Response({}, status=204)
 ```
 
-> Note: I have rewritten the view add_task with this recently introduced Response. A POST to an API endpoint that is successfull should return a 201 status code and the created object.
+> Note: I have also rewritten the view [add_task](/src/02-crud-api/project/views.py#L24) with this recently introduced Response. A POST to an API endpoint that is successfull should return a 201 status code and the created object.
 
 And now as an exercise, why you don't write your own method and routing to mark a task as completed? You can see our simple proposal in the final [source code of this chapter](/src/02-crud-api/project/views.py), method `patch_task`.
 

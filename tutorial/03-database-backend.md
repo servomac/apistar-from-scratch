@@ -33,29 +33,54 @@ We will extend our `docker-compose.yml` with the definition of the new member of
       POSTGRES_PASSWORD: "pass"
 ```
 
+## Your first model
+
+We will use [declarative base](http://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/api.html) from SQLAlchemy to create our *Task* model. Create a new file `models.py`:
+
+```python
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Boolean
+
+Base = declarative_base()
+
+class Task(Base):
+    __tablename__ = 'task'
+    id = Column(Integer, primary_key=True)
+    definition = Column(String(128), unique=True)
+    completed = Column(Boolean, default=False)
+
+    def __repr__(self):
+        return '<Task id={}>'.format(self.id)
+
+```
+
 ## Settings and db integration
 
-First of all, ¡we need to say to our app where to find the db! Let's define the settings from environment variables: API Star has a class Environment that allows to easily read them.
+First of all, we need to say to our app where to find the db and the [metadata](http://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/basic_use.html#accessing-the-metadata) from the SQLAlchemy declarative base.
 
-Create a new file `settings.py` in the project path:
+Let's define the settings from environment variables. API Star has a class Environment that allows to easily read them. Create a new file `settings.py` in the project path:
 
 ```python
 from apistar import environment, schema
+from project.models import Base
 
 class Env(environment.Environment):
     properties = {
         'DEBUG': schema.Boolean(default=False),
-        'DATABASE_URL': schema.String(default='sqlite://')
+        'DATABASE_URL': schema.String(default='sqlite://'),
     }
 
 env = Env()
 
 settings = {
+    'DEBUG': env['DEBUG'],
     'DATABASE': {
-        'URL': env['DATABASE_URL']
+        'URL': env['DATABASE_URL'],
+        'METADATA': Base.metadata,
     }
 }
 ```
+> Note that the settings `DATABASE` parameter is specific of SQLAlchemy. If you want to use Django ORM, look at the documentation.
 
 And pass those as an argument to your app constructor:
 
@@ -67,7 +92,7 @@ from project.settings import settings
 app = App(routes=routes, settings=settings)
 ```
 
-In our api service definition in the `docker-compose.yml` we will add the environment vars needed. I will set debug as True and the database url to be able to connect to the postgres db.
+In our api service definition in the `docker-compose.yml` we will add the environment vars needed. Set debug as `True` and the database url to connect to the postgres db.
 
 ```
   api:
@@ -79,11 +104,9 @@ In our api service definition in the `docker-compose.yml` we will add the enviro
 ```
 > Note: Thanks to the internal docker dns I can directly write the name of the service on the database connection url!
 
-## Your first model
-
-
-
 ### Commands: create_tables
+
+
 
 ## Testing with mocks
 
