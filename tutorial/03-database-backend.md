@@ -80,9 +80,9 @@ settings = {
     }
 }
 ```
-> Note that the settings `DATABASE` parameter is specific of SQLAlchemy. If you want to use Django ORM, look at the documentation.
+> Note that the settings `DATABASE` parameter is specific of SQLAlchemy. If you want to use Django ORM, take a look to the [APIStar readme](https://github.com/tomchristie/apistar#django-orm).
 
-And pass those as an argument to your app constructor:
+And pass those settings as an argument to your app constructor:
 
 ```python
 # app.yml
@@ -92,9 +92,10 @@ from project.settings import settings
 app = App(routes=routes, settings=settings)
 ```
 
-In our api service definition in the `docker-compose.yml` we will add the environment vars needed. Set debug as `True` and the database url to connect to the postgres db.
+Define the environment vars needed in the docker compose api service. Set debug as `True` and the database url to connect to the postgres db.
 
 ```
+# docker-compose.yml
   api:
     [...]
     environment:
@@ -106,7 +107,27 @@ In our api service definition in the `docker-compose.yml` we will add the enviro
 
 ### Commands: create_tables
 
+Use `create_tables` command to create your tables. Import it from apistar and pass it to the App constructor.
+
+```python
+# app.py
+from apistar.commands import create_tables
+[...]
+
+app = App(routes=routes, settings=settings, commands=[create_tables])
+```
+
+And invoke the command:
+
+```
+$ apistar create_tables
+```
+
+> Note: There is some work in progress for custom commands in the framework. See the issue [#65](https://github.com/tomchristie/apistar/issues/65) and pull request [#62](https://github.com/tomchristie/apistar/pull/62).
+
+### Access the database from views
 
 
-## Testing with mocks
+
+## Testing
 

@@ -81,7 +81,7 @@ services:
 And simply run the test suite with:
 
 ```sh
-docker-compose run test
+$ docker-compose run test
   ========================================================================= test session starts =========================================================================
   platform linux -- Python 3.6.1, pytest-3.1.2, py-1.4.34, pluggy-0.4.0
   rootdir: /app, inifile:
