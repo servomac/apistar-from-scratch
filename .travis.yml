@@ -17,6 +17,10 @@ before_script:
   - cd ${TRAVIS_BUILD_DIR}/src/02-crud-api
   - docker build -t base:chapter2 .
 
+  - cd ${TRAVIS_BUILD_DIR}/src/03-database-backend
+  - docker build -t base:chapter3 .
+
 script:
   - docker run --rm -it base:chapter1 apistar test
   - docker run --rm -it base:chapter2 apistar test
+  - docker run --rm -it base:chapter3 apistar test

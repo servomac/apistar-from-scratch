@@ -26,9 +26,9 @@ We will extend our `docker-compose.yml` with the definition of the new member of
       - db
 
   db:
-    image: postgresql:9.6-alpine
+    image: postgres:9.6-alpine
     environment:
-      POSTGRES_DB: "db"
+      POSTGRES_DB: "dbname"
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "pass"
 ```
@@ -99,11 +99,10 @@ Define the environment vars needed in the docker compose api service. Set debug 
   api:
     [...]
     environment:
-      [...]
-      - DATABASE_URL='postgresql://db/postgres'
+      - DATABASE_URL=postgresql+psycopg2://user:pass@db/dbname
       - DEBUG=True
 ```
-> Note: Thanks to the internal docker dns I can directly write the name of the service on the database connection url!
+> Note: Thanks to the internal docker dns I can directly write the name of the service on the database connection url! Take a look of the [SQLAlchemy](http://docs.sqlalchemy.org/en/latest/dialects/postgresql.html) PostgreSQL documentation to construct the URI.
 
 ### Commands: create_tables
 
@@ -121,13 +120,27 @@ And invoke the command:
 
 ```
 $ apistar create_tables
+  Tables created
 ```
 
 > Note: There is some work in progress for custom commands in the framework. See the issue [#65](https://github.com/tomchristie/apistar/issues/65) and pull request [#62](https://github.com/tomchristie/apistar/pull/62).
 
 ### Access the database from views
 
+With APIStar SQLAlchemy you can inject the SQLAlchemy component in the views.
 
+```
+# views.py
+from apistar.backends import SQLAlchemy
+from project.models import Task
+
+def add_task(db: SQLAlchemy, definition: TaskDefinition) -> Response:
+    session = db.session_class()
+    task = Task(definition=definition)
+    session.add(task)
+    session.commit()
+    return Response(task, status=201)
+```
 
 ## Testing
 

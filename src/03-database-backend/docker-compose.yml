@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+  base:
+    build: .
+    entrypoint: apistar
+    working_dir: /app
+    volumes:
+      - "./api:/app"
+
+  api:
+    extends: base
+    command: ["run", "--host", "0.0.0.0", "--port", "80"]
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://user:pass@db/dbname
+      - DEBUG=True
+
+  db:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_DB: "dbname"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+
+  test:
+    extends: base
+    command: ["test"]
