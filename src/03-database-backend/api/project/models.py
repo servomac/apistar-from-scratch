@@ -6,7 +6,7 @@ Base = declarative_base()
 class Task(Base):
     __tablename__ = 'task'
     id = Column(Integer, primary_key=True)
-    definition = Column(String(128), unique=True)
+    definition = Column(String(128))
     completed = Column(Boolean, default=False)
 
     def __repr__(self):

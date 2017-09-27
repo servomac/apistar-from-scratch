@@ -6,7 +6,7 @@ class TaskDefinition(schema.String):
     default = None
 
 class TaskId(schema.Integer):
-    pass
+    minimum = 1
 
 class Task(schema.Object):
     properties = {

@@ -18,4 +18,8 @@ This is a step by step tutorial to develop a simple API using this framework, he
  [03 - Database Backend](/tutorial/03-database-backend.md#readme) *(WIP)*
 
  [04 - Add User Authentication](/tutorial/04-add-user-authentication) *(Pending)*
+
+## Other tutorials
+
+ [API Star's Poll Tutorial](https://github.com/agiliq/apistar-polls-tutorial)
  

@@ -10,7 +10,7 @@ In this section we will introduce the database backends of API Star and add a da
 
 ## PostgreSQL
 
-PostgreSQL will be used as our relational database. We need to install the postgres python connector, psycopg2, and SQLAlchemy to interact with the db, so update your requirements.txt and build again the docker-compose services.
+PostgreSQL will be used as our relational database. We need to install the postgres python connector, psycopg2, and SQLAlchemy to interact with the db, so update your `requirements.txt` and build again the docker-compose services.
 
 ```sh
 psycopg2==2.7.1
@@ -46,7 +46,7 @@ Base = declarative_base()
 class Task(Base):
     __tablename__ = 'task'
     id = Column(Integer, primary_key=True)
-    definition = Column(String(128), unique=True)
+    definition = Column(String(128))
     completed = Column(Boolean, default=False)
 
     def __repr__(self):
@@ -127,19 +127,19 @@ $ apistar create_tables
 
 ### Access the database from views
 
-With APIStar SQLAlchemy you can inject the SQLAlchemy component in the views.
+You can inject the [SQLAlchemy component](https://github.com/tomchristie/apistar/blob/38a5d7a307f268ca3e0e03f6a8779a643c545798/apistar/backends/sqlalchemy_backend.py) in the views. It has `engine`, `session_class` and `metadata` as attributes.
 
 ```
 # views.py
 from apistar.backends import SQLAlchemy
-from project.models import Task
+from project.models import Task as TaskModel
 
 def add_task(db: SQLAlchemy, definition: TaskDefinition) -> Response:
+    task = TaskModel(definition=definition)
     session = db.session_class()
-    task = Task(definition=definition)
     session.add(task)
     session.commit()
-    return Response(task, status=201)
+    return Response(Task(task), status=201)
 ```
 
 ## Testing
