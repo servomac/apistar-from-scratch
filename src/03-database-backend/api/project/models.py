@@ -11,3 +11,10 @@ class Task(Base):
 
     def __repr__(self):
         return '<Task id={}>'.format(self.id)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'definition': self.definition,
+            'completed': self.completed,
+        }

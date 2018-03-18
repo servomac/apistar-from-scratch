@@ -40,8 +40,7 @@ def add_task(db: SQLAlchemy, definition: TaskDefinition) -> Response:
     session.add(task)
     session.commit()
 
-    print(task.completed)
-    return Response(Task(task), status=201)
+    return Response(task.serialize(), status=201)
 
 def delete_task(db: SQLAlchemy, task_id: int) -> Response:
     if task_id not in tasks:

@@ -4,7 +4,7 @@ from project.models import Base
 class Env(environment.Environment):
     properties = {
         'DEBUG': schema.Boolean(default=False),
-        'DATABASE_URL': schema.String(default='sqlite://'),
+        'DATABASE_URL': schema.String(default='sqlite:///test.db'),
     }
 
 env = Env()

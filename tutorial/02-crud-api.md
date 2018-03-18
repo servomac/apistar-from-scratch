@@ -120,7 +120,7 @@ def list_tasks():
     """ Return a list of tasks """
     return tasks
 ```
-> Note: I will present both the test and the modified view, the idea is to drive our development thinking about the expected behaviour writting the test before the code.
+> *I will present both the test and the modified view. The idea behind is to drive our development thinking about the expected behaviour, by writting the test before the code.*
 
 #### TestClient
 

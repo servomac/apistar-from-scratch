@@ -19,7 +19,7 @@ This is a step by step tutorial to develop a simple API using this framework, he
 
  [04 - Add User Authentication](/tutorial/04-add-user-authentication) *(Pending)*
 
-## Other tutorials
+## Related content
 
  [API Star's Poll Tutorial](https://github.com/agiliq/apistar-polls-tutorial)
- 
+ [APIStar project template](https://github.com/juancarlospaco/apistar-project-template)

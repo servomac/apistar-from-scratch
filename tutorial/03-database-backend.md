@@ -127,7 +127,7 @@ $ apistar create_tables
 
 ### Access the database from views
 
-You can inject the [SQLAlchemy component](https://github.com/tomchristie/apistar/blob/38a5d7a307f268ca3e0e03f6a8779a643c545798/apistar/backends/sqlalchemy_backend.py) in the views. It has `engine`, `session_class` and `metadata` as attributes.
+You can inject the [SQLAlchemy component](https://github.com/tomchristie/apistar/blob/38a5d7a307f268ca3e0e03f6a8779a643c545798/apistar/backends/sqlalchemy_backend.py) into the views. It has `engine`, `session_class` and `metadata` as attributes.
 
 ```
 # views.py

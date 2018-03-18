@@ -12,5 +12,5 @@ class Task(schema.Object):
     properties = {
         'id': schema.Integer(default=None),
         'definition': TaskDefinition,
-        'completed': schema.Boolean,
+        'completed': schema.Boolean(default=False),
     }
